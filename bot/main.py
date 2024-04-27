@@ -2,7 +2,7 @@ import vk_api
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from keyboards import StartKeyboard, GamePropertiesKeyboard, GameKeyboard  
 from sapper import Sapper
-from settings.key import API_VERSION, TOKEN, GROUP_ID
+from settings.key import TOKEN, GROUP_ID
 
 class VkBot:
 
@@ -14,8 +14,8 @@ class VkBot:
         "5x5": (5, 5, 8),
     }
 
-    def __init__(self, token, group_id, api_version):
-        self.__vk_session = vk_api.VkApi(token=token, api_version=api_version)
+    def __init__(self, token, group_id):
+        self.__vk_session = vk_api.VkApi(token=token)
         self.__longpoll = VkBotLongPoll(self.__vk_session, group_id)
         self.__start_menu = False
         self.__game_started = False
@@ -30,6 +30,7 @@ class VkBot:
                 'user_id': user_id,
                 'message': message,
                 'keyboard': keyboard.get_keyboard(),
+                'random_id': 0,
             })
         except vk_api.exceptions.VkApiError as exc: 
             print(exc)
@@ -39,6 +40,7 @@ class VkBot:
             self.__vk_session.method('messages.send', {
                 'user_id': user_id,
                 'message': message,
+                'random_id': 0,
             })
         except vk_api.exceptions.VkApiError as exc: 
             print(exc)
@@ -108,5 +110,5 @@ class VkBot:
                     self.__return_to_menu(user_id, start_keyboard.get_keyboard())
 
 if __name__ == '__main__':
-    bot = VkBot(TOKEN, GROUP_ID, API_VERSION)
+    bot = VkBot(TOKEN, GROUP_ID)
     bot.start()
